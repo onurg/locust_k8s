@@ -1,0 +1,17 @@
+master:
+  type: master
+  replicaCount: 1
+  image:
+    repository: locust
+    tag: 0.0.1
+    pullPolicy: Never
+
+slave:
+  type: slave
+  replicaCount: 2
+  image:
+    repository: locust
+    tag: 0.0.1
+    pullPolicy: Never
+
+attackedHost: http://www.google.com

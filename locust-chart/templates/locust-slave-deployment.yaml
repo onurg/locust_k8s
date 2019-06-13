@@ -1,0 +1,36 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: locust-slave
+  labels:
+    app: locust-slave
+    component: locust-slave
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.slave.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "name" . }}
+      release: {{ .Release.Name }}
+      component: locust-slave
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+        component: locust-slave
+        name: locust-slave
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.slave.image.repository }}:{{ .Values.slave.image.tag }}"
+          imagePullPolicy: {{ .Values.slave.image.pullPolicy }}
+          env:
+            - name: LOCUST_MODE
+              value: {{ .Values.slave.type }}
+            - name: LOCUST_MASTER
+              value: locust-master
+            - name: ATTACKED_HOST
+              value: "{{ .Values.attackedHost }}"
